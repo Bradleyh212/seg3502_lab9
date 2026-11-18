@@ -57,6 +57,15 @@ class TemperatureApiSecurityTests {
     }
 
     @Test
+    fun `unknown user cannot access temperature converter`() {
+        mockMvc.perform(
+            get("/temperature-converter/celsius-fahrenheit/50")
+                .header(HttpHeaders.AUTHORIZATION, basic("unknownUser", "password"))
+        )
+            .andExpect(status().isUnauthorized)
+    }
+
+    @Test
     fun `successful authentication does not authenticate the next request`() {
         mockMvc.perform(get("/temperature-converter/celsius-fahrenheit/50")
             .header(HttpHeaders.AUTHORIZATION, basic("user1", "pass1")))
